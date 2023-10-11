@@ -1,0 +1,38 @@
+[
+    {
+        "name": "ideas",
+        "emoji": "💡"
+    },
+    {
+        "name": "technology",
+        "emoji": "🤖"
+    },
+    {
+        "name": "food",
+        "emoji": "🍲"
+    },
+    {
+        "name": "cars",
+        "emoji": "🚙"
+    },
+    {
+        "name":"design",
+        "emoji":"🖌️"
+    },
+    {
+        "name":"art",
+        "emoji":"🎭"
+    },
+    {
+        "name":"movie",
+        "emoji":"🍿"
+    },
+    {
+        "name":"work",
+        "emoji":"💼"
+    },
+    {
+        "name":"shopping",
+        "emoji":"🛍️"
+    }
+]
