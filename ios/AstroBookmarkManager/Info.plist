@@ -54,6 +54,9 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>dealerplate california.otf</string>
+		<string>MonteCarlo.ttf</string>
+		<string>iamblock.monospace.otf</string>
+		<string>theboldfont.ttf</string>
 	</array>
 </dict>
 </plist>

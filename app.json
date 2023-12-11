@@ -1,4 +1,8 @@
 {
   "name": "AstroBookmarkManager",
-  "displayName": "AstroBookmarkManager"
+  "displayName": "AstroBookmarkManager",
+  "plugins":[
+    "@react-native-firebase/app",
+    "@react-native-firebase/auth"
+  ]
 }

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "114048869672",
+    "project_id": "bookmark-app-10a15",
+    "storage_bucket": "bookmark-app-10a15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114048869672:android:5bb6dffc1b84ba7ffedc1d",
+        "android_client_info": {
+          "package_name": "com.astrobookmarkmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114048869672-9jtpt5ajn7kbk2qgoliml2ifm2nrnjde.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.astrobookmarkmanager",
+            "certificate_hash": "acc7bb24e566531718d1c301f5cd04f928449cf6"
+          }
+        },
+        {
+          "client_id": "114048869672-ckbd57ppb3lrqo09fhgvh4lqmb1utk80.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.astrobookmarkmanager",
+            "certificate_hash": "8fde01cd056811a3f5ab85f62c4d8431b6b9073e"
+          }
+        },
+        {
+          "client_id": "114048869672-gqcj6b41k558ujq1gtas58qj7ij4prlb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.astrobookmarkmanager",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "114048869672-guq84petc52l10j66u7fdl8v4tck09kt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3MF5xRkFQklqjUouhTcUYtUQCpxaVvkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "114048869672-guq84petc52l10j66u7fdl8v4tck09kt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

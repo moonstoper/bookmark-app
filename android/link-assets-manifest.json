@@ -2,8 +2,20 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "src/fonts/MonteCarlo.ttf",
+      "sha1": "892296d644aa2d0ecd3f10a034a5725f94aa9ca1"
+    },
+    {
       "path": "src/fonts/dealerplate california.otf",
       "sha1": "2bf5c8bb5158bacdbde39b50ab2d743cc061d972"
+    },
+    {
+      "path": "src/fonts/iamblock.monospace.otf",
+      "sha1": "df44179df64bcfeb82eac61bb96a5368b92e69e4"
+    },
+    {
+      "path": "src/fonts/theboldfont.ttf",
+      "sha1": "50b2881f5d8844ee847af700c3b94612cb2db0ce"
     }
   ]
 }

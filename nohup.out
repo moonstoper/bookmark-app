@@ -1,7 +1,0 @@
-Opening in existing browser session.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Crash Annotation GraphicsCriticalError: |[C0][GFX1-]: CompositorBridgeChild receives IPC close with reason=AbnormalShutdown (t=2Crash Annotation GraphicsCriticalError: |[C0][GFX1-]: CompositorBridgeChild receives IPC close with reason=AbnormalShutdown (t=2.95437) .77321) Exiting due to channel error.
-Crash Annotation GraphicsCriticalError: |[C0][GFX1-]: CompositorBridgeChild receives IPC close with reason=AbnormalShutdown (t=3Exiting due to channel error.
-restorecon: Could not set context for /home/moonstoper/.mozilla/firefox/n4xrg9hn.default-release/cookies.sqlite-wal:  No such file or directory

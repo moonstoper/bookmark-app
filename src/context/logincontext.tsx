@@ -1,28 +1,28 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useContext, useState } from "react";
+import { createContext,useEffect, useState } from "react";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth"
+import firebase from "@react-native-firebase/app"
  var loginContext = createContext({
-    islogged :"",
-    setlogged :(logged:string)=>{},
-    isloaded:false,
-    setloaded:(loaded:boolean)=>{}
+    user : null,
+    initializing : false
 });
 const LoginProvider = ({children}:any)=>{
-    const [islogged,setlogged] = useState("")  
-    const [isloaded,setloaded] = useState<boolean>(false)
-   AsyncStorage.getItem("islogged").then(data=>{
-  
-        if(data!==null && data!==''){
-            setlogged(data)
-        }else{
-            setlogged("")
-        }
-        setloaded(true)
-   }).catch(e=>{
-    setloaded(true)
-   })
+   const [user,setuser] = useState<any>()
+   const [initializing,setinitializing] = useState(true)
+    useEffect(()=>{
+        // setuser("usrename");
+        // setinitializing(false)
+        const subscribeauth = auth().onAuthStateChanged((fireuser)=>{
+            setuser(fireuser)
+            setinitializing(false)
+        })
+        return subscribeauth;
+        // console.log(firebase.initializeApp({}))
+        // console.log(JSON.stringify(auth))
+
+    })
    
    
-    return <loginContext.Provider value={{islogged,setlogged,isloaded,setloaded}}>
+    return <loginContext.Provider value={{user,initializing}}>
        
         {children}
     </loginContext.Provider>

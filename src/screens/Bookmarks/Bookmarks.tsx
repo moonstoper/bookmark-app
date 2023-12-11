@@ -1,15 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Alert, BackHandler, FlatList, Linking, Share, StyleSheet, Text, useColorScheme, View, Animated } from "react-native";
-import { Divider, FAB, List, useTheme } from "react-native-paper";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Alert, BackHandler, FlatList, Linking, Share, StyleSheet, Text, useColorScheme, View, Animated, RefreshControl } from "react-native";
+import { Banner, Divider, FAB, List, Searchbar, useTheme } from "react-native-paper";
 import TopBar from "../../components/TopBar";
 import books from "./bookmarksexample.json"
 import Card from "../../components/Card";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { red100 } from "react-native-paper/src/styles/themes/v2/colors";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity, TouchableNativeFeedback } from "react-native-gesture-handler";
 import { rootTabparams } from "../../../TabNavigator";
 import { MaterialBottomTabScreenProps } from "@react-navigation/material-bottom-tabs";
 import Clipboard from "@react-native-clipboard/clipboard";
+import { bookmasrkCollection, deleteFirebook, getData } from "../../helpers/firestorehelper";
+import { loginContext } from "../../context/logincontext";
+import { useDispatch, useSelector } from "react-redux";
+import { deletebookmark, joinToArray } from "../../reducers/bookslice";
+import cardInterface from "../../types/bookmark";
 // import Animated from "react-native-reanimated";
 function darkmode() {
 
@@ -31,8 +36,15 @@ type prop = MaterialBottomTabScreenProps<rootTabparams, "bookmarks">;
  * @component bookmarks list component in the Main page
  */
 export default function Bookmarks({ navigation }: prop): JSX.Element {
-
+    const [visiblebanner, setvisiblebanner] = useState({
+        visiblebanner: false,
+        visiblebannertext: ""
+    })
     const [isExtended, setExtended] = useState(false)
+    const [refreshing, setrefreshing] = useState(false)
+    const { user, initializing } = useContext(loginContext)
+    const storeRedux = useSelector((state: any) => state.bookmarks)
+    const dispatch = useDispatch()
     const { colors } = useTheme()
     /**
      * 
@@ -52,6 +64,7 @@ export default function Bookmarks({ navigation }: prop): JSX.Element {
     const snapRPoints = useMemo(() => ['60%'], [])
     const bRef = useRef<BottomSheetModal>(null)
 
+    
 
     const showpaper = (item: any) => {
 
@@ -60,9 +73,11 @@ export default function Bookmarks({ navigation }: prop): JSX.Element {
         bRef.current?.present()
 
     }
-
+    
     useEffect(() => {
         // bRef.current?.snapToIndex(-1);
+
+        onrefresh()
         const unsubscribeBackButton = BackHandler.addEventListener("hardwareBackPress", () => {
             // console.log(isExtended)
             if (isExtended) {
@@ -73,23 +88,128 @@ export default function Bookmarks({ navigation }: prop): JSX.Element {
             }
             return true
         })
-
-        return () => unsubscribeBackButton.remove();
-    })
+        Animated.timing(fadeAnim,{
+            toValue: 1, duration: 1000,
+            useNativeDriver: false
+        }).start()
+        
+        return () => {unsubscribeBackButton.remove()
+        
+        }
+    },[storeRedux.bookmark])
 
     const handlechange = useCallback((index: number) => {
         console.log('handleSheetChanges', index);
         // setExtended(false)
     }, []);
 
+    async function onrefresh() {
+        setrefreshing(true)
+        await getData(user, initializing).then((data: any) => {
+            dispatch(joinToArray(data))
+        }).catch(e => {
+            console.error("failed")
+        })
+        setrefreshing(false)
+        console.log(storeRedux)
+    }
+    function deleteBook(id: any) {
+        console.log("function to delete")
+        setExtended(false)
+        bRef.current?.forceClose()
+        deleteFirebook(user, id).then(() => {
+            setvisiblebanner({
+                visiblebanner: true,
+                visiblebannertext: "Deleted successfully"
+            })
+            getData(user,initializing).then((data)=>{
+                dispatch(joinToArray(data))
+            }).catch(e => {
+                setvisiblebanner({
+                    visiblebanner: true,
+                    visiblebannertext: "Failed to refresh data"
+                })
+            })
+
+        }).catch(e => {
+            if (e === "User Not Found")
+                setvisiblebanner({
+                    visiblebanner: true,
+                    visiblebannertext: "User not found"
+                })
+            else {
+                setvisiblebanner({
+                    visiblebanner: true,
+                    visiblebannertext: "Failed to delete data"
+                })
+            }
+
+        })
+
+        setTimeout(() => {
+            setvisiblebanner({
+                visiblebanner: false,
+                visiblebannertext: ""
+            })
+            setbookmarkData({})
+        }, 2000)
+
+
+    }
+
+    const style = StyleSheet.create({
+        searchbox: {
+
+            marginTop: 20,
+            paddingHorizontal:20
+        },
+        searchview: {
+            paddingHorizontal: 20,
+
+        }
+
+
+    })
+   const [query,setquery] = useState("")
+   const [sdata,sdataset] = useState([])
+   const ontextChange=(text:string)=>{
+    setquery(text)
+    if(text===""){
+        sdataset([])
+        return 
+    }
+    else{
+        let newdatatitle = storeRedux.bookmarkArray.filter(({ title, url, tags }: cardInterface) => {
+            if (title.toUpperCase().includes(text.toUpperCase())) {
+                // console.log(title,text)
+                return true
+            }
+            if (url.toUpperCase().includes(text.toUpperCase())) {
+                return true
+            }
+
+        });
+        sdataset(newdatatitle)
+    }
+   }
+   const [fadeAnim] = useState(new Animated.Value(0))
     return (
         <Animated.View style={{
             borderColor: red100,
-            flex: 1
+            flex: 1,
+            opacity:fadeAnim
         }}>
             <TopBar headerName={"bookmarks"} />
+            <View style={style.searchbox}>
+                <Searchbar onClearIconPress={e => { setquery(""); sdataset([]) }} value={query} placeholder="search" onChangeText={ontextChange} />
+            </View>
+            <Banner visible={visiblebanner.visiblebanner}  icon={"information-outline"} >
+
+                <Text >{visiblebanner.visiblebannertext}</Text>
+            </Banner>
             <View>
-                <FlatList data={books} keyExtractor={item => item._id}
+                <FlatList data={sdata.length===0?storeRedux.bookmarkArray:sdata} keyExtractor={item => item._id}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onrefresh}></RefreshControl>}
                     scrollEnabled={true}
                     ItemSeparatorComponent={({ highlighted }): any => {
                         return (
@@ -99,19 +219,27 @@ export default function Bookmarks({ navigation }: prop): JSX.Element {
                             </View>
                         )
                     }}
+                    ListEmptyComponent={<View style={{
+                        paddingVertical: 20,
+                        paddingHorizontal: 20,
+                        alignItems: "center",
+                        
+                    }}>
+                        <Text style={{ color: colors.onBackground,fontSize:20, fontFamily:'dealerplate california'}}>No bookmarks found !</Text>
+                    </View>}
                     renderItem={({ item }): any => {
                         {
 
                             return (
-                                <TouchableOpacity
+                                <TouchableNativeFeedback
                                     onPress={() => { showpaper(item) }}
                                     key={item._id}
                                 >
-                                    <Card value={item} key={item._id}
+                                    <Card value={item} 
 
                                     ></Card>
 
-                                </TouchableOpacity>
+                                </TouchableNativeFeedback>
 
                             );
                         }
@@ -123,7 +251,7 @@ export default function Bookmarks({ navigation }: prop): JSX.Element {
                             paddingHorizontal: 20,
                             alignItems: "center"
                         }}>
-                            <Text style={{ color: "black" }}>No more to show</Text>
+                            <Text style={{ color: colors.onBackground }}>{storeRedux.bookmarkArray.length>0 ? "No more to show":""}</Text>
                         </View>
                     }}
 
@@ -133,18 +261,20 @@ export default function Bookmarks({ navigation }: prop): JSX.Element {
             </View>
             <FAB
                 icon={'plus'}
+                
                 label={'Create'}
-                onPress={() => navigation.getParent()?.navigate("CreateBookmarks", { edit: false, bookmarkId: "demo1" })}
+                
+                onPress={() => navigation.getParent()?.navigate("CreateBookmarks", { edit: false, bookmarkObject: {} })}
                 visible={true}
 
                 // iconMode={'static'}
 
-                color="white"
+                color={colors.background}
                 style={{
                     bottom: 16,
                     right: 16,
                     position: 'absolute',
-                    backgroundColor: colors.secondary,
+                    backgroundColor: colors.onSecondaryContainer,
 
                 }}
             />
@@ -195,12 +325,12 @@ export default function Bookmarks({ navigation }: prop): JSX.Element {
                 <Divider />
                 <List.Section>
                     <List.Subheader>{"Actions"}</List.Subheader>
-                    <List.Item title={"Favourite"} onPress={() => { bRef.current?.close(); console.log("Pressed", bookmarkData) }} ></List.Item>
+                    {/* <List.Item title={"Favourite"} onPress={() => { bRef.current?.close(); console.log("Pressed", bookmarkData.) }} ></List.Item> */}
                     <List.Item title={"Edit"} onPress={() => {
                         bRef.current?.close();
-                        navigation.getParent()?.navigate("CreateBookmarks", { edit: true, bookmarkId: bookmarkData._id })
+                        navigation.getParent()?.navigate("CreateBookmarks", { edit: true, bookmarkObject: bookmarkData })
                     }} ></List.Item>
-                    <List.Item title={"Delete"} onPress={() => console.log("Pressed", bookmarkData)} ></List.Item>
+                    <List.Item title={"Delete"} onPress={(e) => { deleteBook(bookmarkData._id) }} ></List.Item>
                 </List.Section>
 
 

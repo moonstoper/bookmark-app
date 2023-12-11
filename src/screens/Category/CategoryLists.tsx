@@ -29,18 +29,18 @@ export default function CategoryList({ navigation }: Props) {
             <FlatGrid itemDimension={120}
                 data={tags}
                 renderItem={({ item }) => (
-                    <TouchableRipple onPress={()=>navigation.navigate("Category",{name:item.name,icon:item.emoji})}>
+                    <TouchableRipple onPress={()=>navigation.navigate("Category",{name:item.name,icon:"#"})}>
                     <Card  style={{
                         display:"flex",
                         flexDirection:"column",
 
                     }}>
-                        <Card.Title title={item.name}></Card.Title>
-                        <Card.Content style={{}}>
+                        <Card.Title title={"#"+ item.name}></Card.Title>
+                        {/* <Card.Content style={{}}>
                             <Text style={{fontSize:30}}>
                                 {item.emoji}
                             </Text>
-                        </Card.Content>
+                        </Card.Content> */}
                     </Card>
                     </TouchableRipple>
 

@@ -2,10 +2,10 @@ import React from "react";
 import { View, Text, StyleSheet, useColorScheme, Dimensions, Image, TouchableOpacity, StyleProp } from "react-native";
 import { Chip, Divider, IconButton, List, Snackbar, useTheme } from "react-native-paper";
 import cardInterface from "../types/bookmark"
-import { Dividers, Icon, ListItem as ListUIL } from "react-native-ui-lib";
-import ImageTOShow from "../images/sample.png"
+import { DesignTokens, Dividers, Icon, ListItem as ListUIL } from "react-native-ui-lib";
+// import ImageTOShow from "../images/sample.png"
 import Animated from "react-native-reanimated";
-const imageIs = Image.resolveAssetSource(ImageTOShow).uri
+// const imageIs = Image.resolveAssetSource(ImageTOShow).uri
 
 type carddata = cardInterface
 export default function Card(props: { value: carddata}): JSX.Element {
@@ -18,7 +18,7 @@ export default function Card(props: { value: carddata}): JSX.Element {
 
     // }
 
-    const { _id, url, title, isfavourites, tags, favicon } = props.value
+    let {  url, title, isfavourites, tags, favicon } = props.value
     // console.log(title)
     const { colors } = useTheme()
     const styles = StyleSheet.create({
@@ -53,10 +53,15 @@ export default function Card(props: { value: carddata}): JSX.Element {
             <View style={{ flexGrow: 1, width: 300, flex: 4, gap: 10 }}>
                 <Text numberOfLines={1} style={styles.title}>{title}</Text>
                 <View style={styles.url} >
-                    <List.Icon icon="web" color="blue"></List.Icon>
+                    {
+                        favicon.length!==0 ?  <List.Icon icon={{uri:favicon[0]}} ></List.Icon>
+                        :
+                        <List.Icon icon={"web"} ></List.Icon>
+                    }
+                   
                     <Text numberOfLines={1} style={styles.urltext} >{url}</Text>
                 </View>
-                <View style={{ display: "flex", flexDirection: "row", gap: 5, flexWrap: "wrap" }}>
+                <View style={{ display: "flex", flexDirection: "row", gap: 5, flexWrap: "wrap"  }}>
                     {/* {isfavourites && <Chip compact mode="outlined" icon="heart">{undefined}</Chip>} */}
                     {isfavourites && <List.Icon icon="heart" color={colors.primary}
                         style={{ borderWidth: 0, borderColor: colors.outline, borderRadius: 8, paddingHorizontal: 4 }} />}
@@ -67,7 +72,7 @@ export default function Card(props: { value: carddata}): JSX.Element {
                     }
                 </View>
             </View>
-            <Image style={{ width: 100 }} source={{ uri: imageIs }} />
+            {/* <Image style={{ width: 100 }} source={{ uri: imageIs }} /> */}
 
 
         </View>

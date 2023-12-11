@@ -5,6 +5,6 @@
 - [ ] Fuzzy Search or Levenshtein distance (https://en.wikipedia.org/wiki/Levenshtein_distance)
 - [ ] Topbar customization (image background and font change)
 - [ ] Proper Profile Page
-- [ ] BookMark List UI
-
+- [x] BookMark List UI(mostly done)
+- [x] Basic Ctreate Screen , Save not implemented
 ***To be added---*** 
